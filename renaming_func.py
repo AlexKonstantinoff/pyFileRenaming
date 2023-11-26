@@ -9,6 +9,7 @@ class DirectoryWorking:
     def __get_dir_files(dir_path: str) -> list[str] | None:
         """Private method to get list of file paths in given directory"""
         files = [op.join(dp, f) for (dp, dn, filenames) in os.walk(dir_path) if dp == dir_path for f in filenames]
+        files.sort(key=lambda x: op.getmtime(x))
 
         return files
 
@@ -61,7 +62,7 @@ class DirectoryWorking:
                     new_name = new_name.removeprefix(prefix + delimiter)
 
                 if len(new_name.split(delimiter)) > 1:
-                    new_name = ''.join(new_name.split(delimiter)[1:])
+                    new_name = delimiter.join(new_name.split(delimiter)[1:])
 
                 new_filename = op.join(dir_path, new_name)
                 os.rename(fl, new_filename)
