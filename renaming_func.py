@@ -38,14 +38,14 @@ class DirectoryWorking:
                 for fl in files:
                     print('Renaming file: ' + fl)
                     new_fname = op.join(dir_path,
-                                        prefix + pr_delim + str(file_num).zfill(2) + delimiter + fl.split('/')[-1])
+                                        prefix + pr_delim + str(file_num).zfill(2) + delimiter + fl.split(os.sep)[-1])
                     os.rename(fl, new_fname)
                     file_num += 1
             elif type(begin_num) is str and ord(begin_num) < 122:
                 for fl in files:
                     print('Renaming file: ' + fl)
                     new_fname = op.join(dir_path,
-                                        prefix + pr_delim + str(file_num) + delimiter + fl.split('/')[-1])
+                                        prefix + pr_delim + str(file_num) + delimiter + fl.split(os.sep)[-1])
                     os.rename(fl, new_fname)
                     file_num = chr(ord(file_num) + 1)
             else:
@@ -66,7 +66,7 @@ class DirectoryWorking:
         if files is not None:
             for fl in files:
                 print('Working with file: ' + fl)
-                new_name = fl.split('/')[-1]
+                new_name = fl.split(os.sep)[-1]
 
                 if len(fl.split('.')) < 2 or len(fl.split(delimiter)) < 2:
                     print('Skipping this file')
