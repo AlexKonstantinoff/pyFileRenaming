@@ -6,11 +6,23 @@ class DirectoryWorking:
     """Class to realize files renaming logic"""
 
     @staticmethod
+    def is_int_val(val: str | float) -> bool:
+        """Method to check if passed value is integer (or can be converted to integer)"""
+        try:
+            float(val)
+        except ValueError:
+            return False
+        else:
+            return float(val).is_integer()
+
+    @staticmethod
     def __get_dir_files(dir_path: str, order: str) -> list[str] | None:
         """Private method to get list of file paths in given directory"""
         files = [op.join(dp, f) for (dp, dn, filenames) in os.walk(dir_path) if dp == dir_path for f in filenames]
         if order == 'modified':
             files.sort(key=lambda x: op.getmtime(x))
+        else:
+            files.sort(key=lambda x: op.basename(x))
 
         return files
 
@@ -24,24 +36,31 @@ class DirectoryWorking:
                               prefix: str = '', delimiter: str = '.', order: str = 'name') -> bool:
         """Method to rename files in specified directory according to given sequence parameters.
         User may specify prefix and delimiter for renaming"""
+
         files = DirectoryWorking.__get_dir_files(dir_path, order)
 
         if files is not None:
 
-            file_num = begin_num
             if prefix == '':
                 pr_delim = ''
             else:
                 pr_delim = delimiter
 
-            if type(begin_num) is int:
+            if DirectoryWorking.is_int_val(begin_num):
+                file_num = int(begin_num)
+
                 for fl in files:
                     print('Renaming file: ' + fl)
                     new_fname = op.join(dir_path,
                                         prefix + pr_delim + str(file_num).zfill(2) + delimiter + fl.split(os.sep)[-1])
                     os.rename(fl, new_fname)
                     file_num += 1
-            elif type(begin_num) is str and ord(begin_num) < 122:
+            elif (not(DirectoryWorking.is_int_val(begin_num))
+                    and type(begin_num) is str
+                    and ord(begin_num) < 122):
+
+                file_num = begin_num
+
                 for fl in files:
                     print('Renaming file: ' + fl)
                     new_fname = op.join(dir_path,
